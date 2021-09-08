@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoKeyPresser", "AutoKeyPresser.csproj", "{5166A45F-9825-46EB-AB2F-1D611F4C527E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5166A45F-9825-46EB-AB2F-1D611F4C527E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5166A45F-9825-46EB-AB2F-1D611F4C527E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5166A45F-9825-46EB-AB2F-1D611F4C527E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5166A45F-9825-46EB-AB2F-1D611F4C527E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {56AC6F54-8C62-41BB-BF8C-F92ED575A683}
+	EndGlobalSection
+EndGlobal
