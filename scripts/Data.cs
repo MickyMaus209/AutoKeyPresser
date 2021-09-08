@@ -21,7 +21,6 @@ namespace AutoKeyPresser.scripts
             this.dirName = $@"{docPath}\Data";
             this.dataFile = $@"{this.dirName}\data.txt";
             this.Setup();
-
         }
 
         public void Setup()
@@ -32,7 +31,7 @@ namespace AutoKeyPresser.scripts
                 using (StreamWriter streamWriter = new StreamWriter(this.dataFile))
                 {
                     //AntiAFK, AutoClicker, WebRefresher, Bunny, Sprint, Walk
-                    streamWriter.Write("0,25" + "\n" + "0,2" + "\n" + "15" + "\n" + "0,35" + "\n" + "0,2" + "\n" + "0,15" + "\n" + "G" + "\n" + "True");
+                    streamWriter.Write("2" + "\n" + "5" + "\n" + "15" + "\n" + "4" + "\n" + "5" + "\n" + "6" + "\n" + "K" + "\n" + "True");
                     streamWriter.Flush();
                     streamWriter.Close();
                 }
