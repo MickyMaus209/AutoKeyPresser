@@ -1,8 +1,12 @@
 ﻿using AutoKeyPresser.scripts.DiscordRpc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AutoKeyPresser.scripts
@@ -13,6 +17,12 @@ namespace AutoKeyPresser.scripts
         public Data data { get; }
         public Discord discord { get; }
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
+
+        public int interval = 1;
+        public bool threads = false;
+
         public RunMode(Utils utils)
         {
             this.utils = utils;
@@ -22,14 +32,14 @@ namespace AutoKeyPresser.scripts
 
         public void run()
         {
-            string[] lines = data.ReadData(data.dataFile);
+            string[] lines = File.ReadAllLines(utils.run.data.dataFile);
             discord.UpdatePresence("Using " + utils.mode);
 
             switch (utils.mode)
             {
                 case "AntiAFK":
 
-                    int i = 0;
+                    int i = 0;//
 
                     Task.Run(async () =>
                     {
@@ -62,23 +72,27 @@ namespace AutoKeyPresser.scripts
                     break;
 
                 case "AutoClicker":
-                    KeyTimer(new uint[] { 0x0002 }, lines[1]);
+
+                    Task.Run(async () =>
+                    {
+                        while (utils.mainWindow.isRunning)
+                        {
+                            mouse_event(dwFlags: 0x0003, dx: 0, dy: 0, cButtons: 0, dwExtraInfo: 0);
+                            Thread.Sleep(1);
+                            mouse_event(dwFlags: 0x0001, dx: 0, dy: 0, cButtons: 0, dwExtraInfo: 0);
+                        }
+
+                        await Task.Delay(TimeSpan.FromSeconds(Double.Parse(lines[1])), utils.mainWindow.cts.Token);
+                    }, utils.mainWindow.cts.Token);
+
                     break;
 
                 case "WebRefresher":
                     KeyTimer(new uint[] { 0x0074 }, lines[2]);
                     break;
 
-                case "Bunny":
-                    KeyTimer(new uint[] { 0x0057, 0x0020, 0x00A2 }, lines[3]);
-                    break;
-
-                case "Sprint":
-                    KeyTimer(new uint[] { 0x00A2, 0x0057 }, lines[4]);
-                    break;
-
                 case "Walk":
-                    KeyTimer(new uint[] { 0x0057 }, lines[5]);
+                    KeyTimer(new uint[] { 0x0057 }, lines[3]);
                     break;
 
                 default:

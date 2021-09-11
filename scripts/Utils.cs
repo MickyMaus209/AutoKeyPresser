@@ -27,13 +27,11 @@ namespace AutoKeyPresser.scripts
         public MainWindow mainWindow { get; }
         public string mode { get; set; }
         public RunMode run { get; }
-        [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
 
         public Utils(MainWindow mainWindow)
         {
-            this.run = new RunMode(this);
             this.mainWindow = mainWindow;
+            this.run = new RunMode(this);
             this.mode = "";
         }
 
@@ -75,26 +73,12 @@ namespace AutoKeyPresser.scripts
             }
         }
 
-        public void PrimaryButtonSwitchStatus()
-        {
-            if (mainWindow.StartButton.IsEnabled)
-            {
-                mainWindow.StartButton.IsEnabled = false;
-                mainWindow.StopButton.IsEnabled = true;
-            }
-            else
-            {
-                mainWindow.StartButton.IsEnabled = true;
-                mainWindow.StopButton.IsEnabled = false;
-            }
-        }
-
         public void PressKey(uint keyCode)
         {
             MainWindow.keybd_event(keyCode, 0, 0, 0);
         }
 
-        public int GetSavePoint(String content)
+        public int GetSavePoint(string content)
         {
             int i = 0;
 
@@ -112,24 +96,20 @@ namespace AutoKeyPresser.scripts
                     i = 2;
                     break;
 
-                case "Bunny":
+                case "Walk":
                     i = 3;
                     break;
 
-                case "Sprint":
+                case "START":
                     i = 4;
                     break;
-                case "Walk":
-                    i = 5;
-                    break;
-                case "START":
-                    i = 6;
-                    break;
+
                 case "STOP":
-                    i = 6;
+                    i = 4;
                     break;
+
                 case "Discord":
-                    i = 7;
+                    i = 5;
                     break;
 
                 default:
@@ -142,7 +122,7 @@ namespace AutoKeyPresser.scripts
 
         public void OpenGitHubRepository()
         {
-            Process.Start("https://github.com");
+            Process.Start("https://github.com/MickyMaus209/AutoKeyPresser");
         }
 
         public void OpenDiscord()
@@ -150,35 +130,52 @@ namespace AutoKeyPresser.scripts
             Process.Start("https://discord.gg/GQvWebK8D3");
         }
 
+        public void Start()
+        {
+            if (this.mainWindow.isRunning)
+            {
+                this.printWarning(mainWindow.WarningLabel, "Warning!" + "\n" + "Already" + "\n" + "running!" + "\n" + "Stop first.", 3500);
+                return;
+            }
+            if (this.mode.Equals(""))
+            {
+                this.printWarning(mainWindow.WarningLabel, "Warning!" + "\n" + "No Mode" + "\n" + "selected!", 3500);
+                return;
+            }
+
+            this.mainWindow.StartButton.IsEnabled = false;
+            this.mainWindow.StopButton.IsEnabled = true;
+            this.mainWindow.isRunning = true;
+            this.run.run();
+        }
+
         public void Stop()
         {
-            if (mainWindow.isRunning)
+            this.mainWindow.isRunning = false;
+            this.mainWindow.cts.Cancel();
+            this.mainWindow.cts = null;
+            this.mainWindow.cts = new CancellationTokenSource();
+            this.mainWindow.StartButton.IsEnabled = true;
+            this.mainWindow.StopButton.IsEnabled = false;
+
+            this.run.discord.UpdatePresence("Idle / Main Menu");
+        }
+
+        public void Toggle()
+        {
+            if (this.mainWindow.isRunning)
             {
-                PrimaryButtonSwitchStatus();
-                mainWindow.cts.Cancel();
-                mainWindow.cts = null;
-                mainWindow.cts = new CancellationTokenSource();
-                mainWindow.isRunning = false;
-                run.discord.UpdatePresence("Idle / Main Menu");
+                Stop();
+            }
+            else
+            {
+                Start();
             }
         }
 
-        public void Start()
+        public void SetHotKey()
         {
-            if (mainWindow.isRunning)
-            {
-                printWarning(mainWindow.WarningLabel, "Warning!" + "\n" + "Already" + "\n" + "running!" + "\n" + "Stop first.", 3500);
-                return;
-            }
-            if (mode.Equals(""))
-            {
-                printWarning(mainWindow.WarningLabel, "Warning!" + "\n" + "No Mode" + "\n" + "selected!", 3500);
-                return;
-            }
-
-            mainWindow.isRunning = true;
-            run.run();
-            PrimaryButtonSwitchStatus();
+            this.mainWindow.toggleKey = (Key)Enum.Parse(typeof(Key), File.ReadAllLines(this.run.data.dataFile)[4], false);
         }
     }
 }

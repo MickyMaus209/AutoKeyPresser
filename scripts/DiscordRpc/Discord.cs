@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace AutoKeyPresser.scripts.DiscordRpc
 
         public bool IsDiscordActivityOn()
         {
-            return bool.Parse(run.data.ReadData(run.data.dataFile)[7]);
+            return bool.Parse(File.ReadAllLines(run.data.dataFile)[5]);
         }
     }
 }

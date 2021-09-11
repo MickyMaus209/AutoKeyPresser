@@ -28,22 +28,28 @@ namespace AutoKeyPresser.scripts
             if (!Directory.Exists(this.dirName))
             {
                 Directory.CreateDirectory(this.dirName);
+            }
+
+            if (!File.Exists(this.dataFile))
+            {
+                File.Create(this.dataFile).Close();
+
                 using (StreamWriter streamWriter = new StreamWriter(this.dataFile))
                 {
-                    //AntiAFK, AutoClicker, WebRefresher, Bunny, Sprint, Walk
-                    streamWriter.Write("2" + "\n" + "5" + "\n" + "15" + "\n" + "4" + "\n" + "5" + "\n" + "6" + "\n" + "K" + "\n" + "True");
+                    //AntiAFK, AutoClicker, WebRefresher, Walk
+                    streamWriter.Write("1" + "\n" + "1" + "\n" + "15" + "\n" + "1" + "\n" + "K" + "\n" + "True");
                     streamWriter.Flush();
                     streamWriter.Close();
                 }
             }
         }
 
-        public void WriteDataFile(string to, string from)
+        public void WriteDataFile(int to, string from)
         {
-            string[] line = ReadData(dataFile);
+            string[] line = File.ReadAllLines(this.dataFile);
             using (StreamWriter streamWriter = new StreamWriter(dataFile))
             {
-                line[utils.GetSavePoint(to)] = from;
+                line[to] = from;
 
                 foreach (string s in line)
                 {
@@ -53,11 +59,6 @@ namespace AutoKeyPresser.scripts
                 streamWriter.Flush();
                 streamWriter.Close();
             }
-        }
-
-        public string[] ReadData(string file)
-        {
-            return File.ReadAllLines(file);
         }
     }
 }

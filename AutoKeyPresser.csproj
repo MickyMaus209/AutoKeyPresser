@@ -59,8 +59,7 @@
     <Compile Include="scripts\Data.cs" />
     <Compile Include="scripts\DiscordRpc\Discord.cs" />
     <Compile Include="scripts\DiscordRpc\DiscordRpc.cs" />
-    <Compile Include="scripts\hotkeys\GlobalHotKey.cs" />
-    <Compile Include="scripts\hotkeys\HotKeyManager.cs" />
+    <Compile Include="scripts\hotkeys\LowLevelKeyboardListener.cs" />
     <Compile Include="scripts\RunMode.cs" />
     <Compile Include="scripts\Utils.cs" />
     <Page Include="MainWindow.xaml">

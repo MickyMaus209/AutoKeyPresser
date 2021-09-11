@@ -1,6 +1,6 @@
 ﻿using AutoKeyPresser.scripts;
 using AutoKeyPresser.scripts.DiscordRpc;
-using AutoKeyPresser.scripts.HotKeys;
+using DesktopWPFAppLowLevelKeyboardHook;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,40 +32,61 @@ namespace AutoKeyPresser
     {
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void keybd_event(uint bVk, uint bScan, uint dwFlags, uint dwExtraInfo);
+
         public CancellationTokenSource cts = new CancellationTokenSource();
         public bool isRunning;
         private Utils utils;
         private const string version = "3.0";
         public string rMode { get; set; }
         private string key;
-
+        private LowLevelKeyboardListener listener;
+        public Key toggleKey { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             this.utils = new Utils(this);
+
+            //Element Tags
             AutoClickerButton.Tag = "off";
             AntiAfkButton.Tag = "off";
-            SprintButton.Tag = "off";
             WalkButton.Tag = "off";
             WebRefresherButton.Tag = "off";
-            BunnyButton.Tag = "off";
             WalkButton.Tag = "off";
+
             StopButton.IsEnabled = false;
             StartButton.IsEnabled = true;
-            isRunning = false;
+
             CurrentVersionLabel.Content = CurrentVersionLabel.Content + version;
+            this.utils.SetHotKey();
+
+            this.isRunning = false;
             this.rMode = "";
             this.key = "";
-            HotKeyManager.SetupSystemHook();
-            Closing += MainWindow_Closing;
-            SetupHotKey();
+
             Console.WriteLine("AutoKeyPresser v.3.0 started.");
         }
 
-        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            HotKeyManager.ShutdownSystemHook();
+            listener = new LowLevelKeyboardListener();
+            listener.OnKeyPressed += Listener_OnKeyPressed;
+
+            listener.HookKeyboard();
+        }
+
+        private void Listener_OnKeyPressed(object sender, KeyPressedArgs e)
+        {
+            if (e.KeyPressed.ToString().Equals(File.ReadAllLines(this.utils.run.data.dataFile)[4]) && ModeSettingsGrid.Visibility != Visibility.Visible)
+            {
+                this.utils.Toggle();
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            listener.UnHookKeyboard();
+            cts = null;
         }
 
         private void AutoClicker_LeftClick(object sender, RoutedEventArgs e)
@@ -93,16 +114,6 @@ namespace AutoKeyPresser
             utils.SwitchStatus(WebRefresherButton);
         }
 
-        private void Bunny_LeftClick(object sender, RoutedEventArgs e)
-        {
-            utils.SwitchStatus(BunnyButton);
-        }
-
-        private void Sprint_LeftClick(object sender, RoutedEventArgs e)
-        {
-            utils.SwitchStatus(SprintButton);
-        }
-
         private void Walk_LeftClick(object sender, RoutedEventArgs e)
         {
             utils.SwitchStatus(WalkButton);
@@ -116,14 +127,14 @@ namespace AutoKeyPresser
             }
             Button button = (Button)sender;
 
-
-            string[] lines = this.utils.run.data.ReadData(utils.run.data.dataFile);
+            string[] lines = File.ReadAllLines(utils.run.data.dataFile);
 
             this.rMode = button.Content.ToString();
-            HotKeyButton.Content = this.utils.run.data.ReadData(utils.run.data.dataFile)[utils.GetSavePoint(rMode)];
+            HotKeyButton.Content = File.ReadAllLines(utils.run.data.dataFile)[utils.GetSavePoint(this.rMode)];
 
             PrimaryButtonSettingsGrid.Visibility = Visibility.Visible;
             DefaultGrid.IsEnabled = false;
+            key = File.ReadAllLines(this.utils.run.data.dataFile)[4];
         }
 
         private void ModeButton_RightClick(object sender, RoutedEventArgs e)
@@ -135,14 +146,14 @@ namespace AutoKeyPresser
             Button button = (Button)sender;
 
             this.rMode = button.Content.ToString();
-            DelayText.Text = this.utils.run.data.ReadData(utils.run.data.dataFile)[utils.GetSavePoint(rMode)].Replace(",", ".");
+            DelayText.Text = File.ReadAllLines(this.utils.run.data.dataFile)[this.utils.GetSavePoint(this.rMode)].Replace(",", ".");
             ModeSettingsGrid.Visibility = Visibility.Visible;
             DefaultGrid.IsEnabled = false;
         }
 
         private void ModeSaveButton_Click(object sender, RoutedEventArgs e)
         {
-            utils.run.data.WriteDataFile(rMode, DelayText.Text);
+            utils.run.data.WriteDataFile(this.utils.GetSavePoint(rMode), DelayText.Text);
             CloseSettings();
         }
 
@@ -153,12 +164,12 @@ namespace AutoKeyPresser
 
         private void CloseSettings()
         {
-            rMode = "";
-            key = "";
+            this.rMode = "";
+            this.key = "";
             PrimaryButtonSettingsGrid.Visibility = Visibility.Hidden;
             ModeSettingsGrid.Visibility = Visibility.Hidden;
             DefaultGrid.IsEnabled = true;
-            utils.run.discord.UpdatePresence("Idle / Main Menu");
+            this.utils.run.discord.UpdatePresence("Idle / Main Menu");
         }
 
         private void DelaySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -169,33 +180,11 @@ namespace AutoKeyPresser
             }
         }
 
-        private void SetupHotKey()
-        {
-            HotKeyManager.RemoveAll();
-            string[] line = utils.run.data.ReadData(utils.run.data.dataFile);
-
-            Key StartKey = (Key)Enum.Parse(typeof(Key), line[6], true);
-
-            HotKeyManager.AddHotkey(ModifierKeys.None, StartKey, () => Toggle());
-        }
-
-        private void Toggle()
-        {
-            if (isRunning)
-            {
-                utils.Stop();
-            }
-            else
-            {
-                utils.Start();
-            }
-        }
-
         private void PrimarySaveButton_Click(object sender, RoutedEventArgs e)
         {
-            utils.run.data.WriteDataFile(rMode, key);
-            SetupHotKey();
-            CloseSettings();
+            this.utils.run.data.WriteDataFile(this.utils.GetSavePoint(rMode), key);
+            this.utils.SetHotKey();
+            this.CloseSettings();
         }
 
         private void HotKeyButton_KeyDown(object sender, KeyEventArgs e)
@@ -242,8 +231,9 @@ namespace AutoKeyPresser
 
         private void DiscordCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            utils.run.data.WriteDataFile("Discord", DiscordCheckBox.IsChecked.ToString());
+            utils.run.data.WriteDataFile(this.utils.GetSavePoint("Discord"), DiscordCheckBox.IsChecked.ToString());
         }
+
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             utils.OpenGitHubRepository();
