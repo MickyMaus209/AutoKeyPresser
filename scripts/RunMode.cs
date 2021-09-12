@@ -20,9 +20,6 @@ namespace AutoKeyPresser.scripts
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
 
-        public int interval = 1;
-        public bool threads = false;
-
         public RunMode(Utils utils)
         {
             this.utils = utils;
@@ -33,17 +30,17 @@ namespace AutoKeyPresser.scripts
         public void run()
         {
             string[] lines = File.ReadAllLines(utils.run.data.dataFile);
-            discord.UpdatePresence("Using " + utils.mode);
+            this.discord.UpdatePresence("Using " + this.utils.mode);
 
             switch (utils.mode)
             {
                 case "AntiAFK":
 
-                    int i = 0;//
+                    int i = 0;
 
                     Task.Run(async () =>
                     {
-                        while (utils.mainWindow.isRunning)
+                        while (this.utils.mainWindow.isRunning)
                         {
                             switch (i)
                             {
@@ -68,7 +65,7 @@ namespace AutoKeyPresser.scripts
                             i++;
                             await Task.Delay(TimeSpan.FromSeconds(Double.Parse(lines[0])), utils.mainWindow.cts.Token);
                         }
-                    }, utils.mainWindow.cts.Token);
+                    }, this.utils.mainWindow.cts.Token);
                     break;
 
                 case "AutoClicker":
@@ -82,8 +79,8 @@ namespace AutoKeyPresser.scripts
                             mouse_event(dwFlags: 0x0001, dx: 0, dy: 0, cButtons: 0, dwExtraInfo: 0);
                         }
 
-                        await Task.Delay(TimeSpan.FromSeconds(Double.Parse(lines[1])), utils.mainWindow.cts.Token);
-                    }, utils.mainWindow.cts.Token);
+                        await Task.Delay(TimeSpan.FromSeconds(Double.Parse(lines[1])), this.utils.mainWindow.cts.Token);
+                    }, this.utils.mainWindow.cts.Token);
 
                     break;
 
@@ -96,9 +93,9 @@ namespace AutoKeyPresser.scripts
                     break;
 
                 default:
-                    discord.UpdatePresence("Idle / Main Menu");
+                    this.discord.UpdatePresence("Idle / Main Menu");
                     Console.WriteLine("Error!");
-                    utils.mainWindow.isRunning = false;
+                    this.utils.mainWindow.isRunning = false;
                     break;
             }
         }
@@ -107,7 +104,7 @@ namespace AutoKeyPresser.scripts
         {
             Task.Run(async () =>
             {
-                while (utils.mainWindow.isRunning)
+                while (this.utils.mainWindow.isRunning)
                 {
                     for (int i = 0; i < keys.Length; i++)
                     {
@@ -115,7 +112,7 @@ namespace AutoKeyPresser.scripts
                     }
                     await Task.Delay(TimeSpan.FromSeconds(Double.Parse(time)), utils.mainWindow.cts.Token);
                 }
-            }, utils.mainWindow.cts.Token);
+            }, this.utils.mainWindow.cts.Token);
         }
     }
 }

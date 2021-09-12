@@ -17,7 +17,7 @@ namespace AutoKeyPresser.scripts.DiscordRpc
         public Discord(RunMode run)
         {
             this.run = run;
-            if (!IsDiscordActivityOn())
+            if (!this.IsDiscordActivityOn())
             {
                 return;
             }
@@ -32,7 +32,7 @@ namespace AutoKeyPresser.scripts.DiscordRpc
 
         public void UpdatePresence(string state)
         {
-            if (!IsDiscordActivityOn())
+            if (!this.IsDiscordActivityOn())
             {
                 return;
             }

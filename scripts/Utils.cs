@@ -28,6 +28,9 @@ namespace AutoKeyPresser.scripts
         public string mode { get; set; }
         public RunMode run { get; }
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        public static extern void keybd_event(uint bVk, uint bScan, uint dwFlags, uint dwExtraInfo);
+
         public Utils(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -41,14 +44,13 @@ namespace AutoKeyPresser.scripts
             label.Visibility = Visibility.Visible;
             await Task.Delay(millis);
             label.Visibility = Visibility.Hidden;
-            label.Content = "Warning!";
         }
 
-        public void SwitchStatus(Button b)
+        public void SwitchStatus(Button b)//wallwwwl
         {
             if (b.Tag.Equals("off"))
             {
-                foreach (Control control in mainWindow.ModeGrid.Children)
+                foreach (Control control in this.mainWindow.ModeGrid.Children)
                 {
                     if (control.GetType() != typeof(Button) || control.Name.Equals(b.Name) || control == null || control.Tag == null)
                     {
@@ -75,7 +77,7 @@ namespace AutoKeyPresser.scripts
 
         public void PressKey(uint keyCode)
         {
-            MainWindow.keybd_event(keyCode, 0, 0, 0);
+            keybd_event(keyCode, 0, 0, 0);
         }
 
         public int GetSavePoint(string content)
@@ -113,7 +115,7 @@ namespace AutoKeyPresser.scripts
                     break;
 
                 default:
-                    Console.WriteLine("Error!!!!!");
+                    Console.WriteLine("Error!");
                     Environment.Exit(0);
                     break;
             }
@@ -165,11 +167,11 @@ namespace AutoKeyPresser.scripts
         {
             if (this.mainWindow.isRunning)
             {
-                Stop();
+                this.Stop();
             }
             else
             {
-                Start();
+                this.Start();
             }
         }
 

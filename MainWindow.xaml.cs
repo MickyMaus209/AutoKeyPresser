@@ -30,9 +30,6 @@ namespace AutoKeyPresser
     /// </summary>
     public partial class MainWindow : Window
     {
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern void keybd_event(uint bVk, uint bScan, uint dwFlags, uint dwExtraInfo);
-
         public CancellationTokenSource cts = new CancellationTokenSource();
         public bool isRunning;
         private Utils utils;
@@ -134,7 +131,7 @@ namespace AutoKeyPresser
 
             PrimaryButtonSettingsGrid.Visibility = Visibility.Visible;
             DefaultGrid.IsEnabled = false;
-            key = File.ReadAllLines(this.utils.run.data.dataFile)[4];
+            this.key = File.ReadAllLines(this.utils.run.data.dataFile)[4];
         }
 
         private void ModeButton_RightClick(object sender, RoutedEventArgs e)
@@ -190,7 +187,7 @@ namespace AutoKeyPresser
         private void HotKeyButton_KeyDown(object sender, KeyEventArgs e)
         {
             HotKeyButton.Content = e.Key;
-            key = e.Key.ToString();
+            this.key = e.Key.ToString();
             foreach (Control c in PrimaryButtonSettingsGrid.Children)
             {
                 if (c != HotKeyButton)
@@ -202,7 +199,6 @@ namespace AutoKeyPresser
 
         private void HotKeyButton_Click(object sender, RoutedEventArgs e)
         {
-            key = "";
             HotKeyButton.Content = "Click a key!";
             foreach (Control c in PrimaryButtonSettingsGrid.Children)
             {
