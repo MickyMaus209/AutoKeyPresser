@@ -132,6 +132,7 @@ namespace AutoKeyPresser
             PrimaryButtonSettingsGrid.Visibility = Visibility.Visible;
             DefaultGrid.IsEnabled = false;
             this.key = File.ReadAllLines(this.utils.run.data.dataFile)[4];
+            this.utils.Stop();
         }
 
         private void ModeButton_RightClick(object sender, RoutedEventArgs e)
@@ -146,6 +147,7 @@ namespace AutoKeyPresser
             DelayText.Text = File.ReadAllLines(this.utils.run.data.dataFile)[this.utils.GetSavePoint(this.rMode)].Replace(",", ".");
             ModeSettingsGrid.Visibility = Visibility.Visible;
             DefaultGrid.IsEnabled = false;
+            this.utils.Stop();
         }
 
         private void ModeSaveButton_Click(object sender, RoutedEventArgs e)
@@ -215,6 +217,7 @@ namespace AutoKeyPresser
             MainSettingsGrid.Visibility = Visibility.Visible;
             DiscordCheckBox.IsChecked = utils.run.discord.IsDiscordActivityOn();
             this.utils.run.discord.UpdatePresence("Settings");
+            this.utils.Stop();
         }
 
         private void DataResetButton_Click(object sender, RoutedEventArgs e)
