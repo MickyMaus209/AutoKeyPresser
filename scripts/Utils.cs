@@ -153,14 +153,17 @@ namespace AutoKeyPresser.scripts
 
         public void Stop()
         {
-            this.mainWindow.isRunning = false;
-            this.mainWindow.cts.Cancel();
-            this.mainWindow.cts = null;
-            this.mainWindow.cts = new CancellationTokenSource();
-            this.mainWindow.StartButton.IsEnabled = true;
-            this.mainWindow.StopButton.IsEnabled = false;
+            if (this.mainWindow.isRunning)
+            {
+                this.mainWindow.isRunning = false;
+                this.mainWindow.cts.Cancel();
+                this.mainWindow.cts = null;
+                this.mainWindow.cts = new CancellationTokenSource();
+                this.mainWindow.StartButton.IsEnabled = true;
+                this.mainWindow.StopButton.IsEnabled = false;
 
-            this.run.discord.UpdatePresence("Idle / Main Menu");
+                this.run.discord.UpdatePresence("Idle / Main Menu");
+            }
         }
 
         public void Toggle()

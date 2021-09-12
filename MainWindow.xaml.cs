@@ -213,11 +213,11 @@ namespace AutoKeyPresser
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
+            this.utils.Stop();
             DefaultGrid.Visibility = Visibility.Hidden;
             MainSettingsGrid.Visibility = Visibility.Visible;
             DiscordCheckBox.IsChecked = utils.run.discord.IsDiscordActivityOn();
             this.utils.run.discord.UpdatePresence("Settings");
-            this.utils.Stop();
         }
 
         private void DataResetButton_Click(object sender, RoutedEventArgs e)
