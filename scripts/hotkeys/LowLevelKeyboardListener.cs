@@ -33,17 +33,17 @@ namespace DesktopWPFAppLowLevelKeyboardHook
 
         public LowLevelKeyboardListener()
         {
-            _proc = HookCallback;
+            this._proc = HookCallback;
         }
 
         public void HookKeyboard()
         {
-            _hookID = SetHook(_proc);
+            this._hookID = SetHook(_proc);
         }
 
         public void UnHookKeyboard()
         {
-            UnhookWindowsHookEx(_hookID);
+            UnhookWindowsHookEx(this._hookID);
         }
 
         private IntPtr SetHook(LowLevelKeyboardProc proc)
@@ -61,10 +61,10 @@ namespace DesktopWPFAppLowLevelKeyboardHook
             {
                 int vkCode = Marshal.ReadInt32(lParam);
 
-                if (OnKeyPressed != null) { OnKeyPressed(this, new KeyPressedArgs(KeyInterop.KeyFromVirtualKey(vkCode))); }
+                if (this.OnKeyPressed != null) { OnKeyPressed(this, new KeyPressedArgs(KeyInterop.KeyFromVirtualKey(vkCode))); }
             }
 
-            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+            return CallNextHookEx(this._hookID, nCode, wParam, lParam);
         }
     }
 
@@ -74,7 +74,7 @@ namespace DesktopWPFAppLowLevelKeyboardHook
 
         public KeyPressedArgs(Key key)
         {
-            KeyPressed = key;
+            this.KeyPressed = key;
         }
     }
 }

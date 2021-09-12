@@ -63,7 +63,7 @@ namespace AutoKeyPresser.scripts
                                     break;
                             }
                             i++;
-                            await Task.Delay(TimeSpan.FromSeconds(Double.Parse(lines[0])), utils.mainWindow.cts.Token);
+                            await Task.Delay(TimeSpan.FromSeconds(Double.Parse(lines[0])), this.utils.mainWindow.cts.Token);
                         }
                     }, this.utils.mainWindow.cts.Token);
                     break;

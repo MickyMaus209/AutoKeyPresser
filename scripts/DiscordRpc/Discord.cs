@@ -42,7 +42,7 @@ namespace AutoKeyPresser.scripts.DiscordRpc
 
         public bool IsDiscordActivityOn()
         {
-            return bool.Parse(File.ReadAllLines(run.data.dataFile)[5]);
+            return bool.Parse(File.ReadAllLines(this.run.data.dataFile)[5]);
         }
     }
 }

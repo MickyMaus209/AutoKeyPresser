@@ -66,15 +66,15 @@ namespace AutoKeyPresser
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            listener = new LowLevelKeyboardListener();
-            listener.OnKeyPressed += Listener_OnKeyPressed;
+            this.listener = new LowLevelKeyboardListener();
+            this.listener.OnKeyPressed += Listener_OnKeyPressed;
 
-            listener.HookKeyboard();
+            this.listener.HookKeyboard();
         }
 
         private void Listener_OnKeyPressed(object sender, KeyPressedArgs e)
         {
-            if (e.KeyPressed.ToString().Equals(File.ReadAllLines(this.utils.run.data.dataFile)[4]) && ModeSettingsGrid.Visibility != Visibility.Visible)
+            if (e.KeyPressed.ToString().Equals(File.ReadAllLines(this.utils.run.data.dataFile)[4]) && ModeSettingsGrid.Visibility != Visibility.Visible && PrimaryButtonSettingsGrid.Visibility != Visibility.Visible)
             {
                 this.utils.Toggle();
             }
@@ -82,38 +82,38 @@ namespace AutoKeyPresser
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            listener.UnHookKeyboard();
-            cts = null;
+            this.listener.UnHookKeyboard();
+            this.cts = null;
         }
 
         private void AutoClicker_LeftClick(object sender, RoutedEventArgs e)
         {
-            utils.SwitchStatus(AutoClickerButton);
+            this.utils.SwitchStatus(AutoClickerButton);
         }
 
         private void AntiAfk_LeftClick(object sender, RoutedEventArgs e)
         {
-            utils.SwitchStatus(AntiAfkButton);
+            this.utils.SwitchStatus(AntiAfkButton);
         }
 
         private void StartButton_LeftClick(object sender, RoutedEventArgs e)
         {
-            utils.Start();
+            this.utils.Start();
         }
 
         private void StopButton_LeftClick(object sender, RoutedEventArgs e)
         {
-            utils.Stop();
+            this.utils.Stop();
         }
 
         private void WebRefresher_LeftClick(object sender, RoutedEventArgs e)
         {
-            utils.SwitchStatus(WebRefresherButton);
+            this.utils.SwitchStatus(WebRefresherButton);
         }
 
         private void Walk_LeftClick(object sender, RoutedEventArgs e)
         {
-            utils.SwitchStatus(WalkButton);
+            this.utils.SwitchStatus(WalkButton);
         }
 
         private void PrimaryButton_RightClick(object sender, RoutedEventArgs e)
@@ -150,13 +150,13 @@ namespace AutoKeyPresser
 
         private void ModeSaveButton_Click(object sender, RoutedEventArgs e)
         {
-            utils.run.data.WriteDataFile(this.utils.GetSavePoint(rMode), DelayText.Text);
+            this.utils.run.data.WriteDataFile(this.utils.GetSavePoint(rMode), DelayText.Text);
             CloseSettings();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            CloseSettings();
+            this.CloseSettings();
         }
 
         private void CloseSettings()
@@ -214,13 +214,13 @@ namespace AutoKeyPresser
             DefaultGrid.Visibility = Visibility.Hidden;
             MainSettingsGrid.Visibility = Visibility.Visible;
             DiscordCheckBox.IsChecked = utils.run.discord.IsDiscordActivityOn();
-            utils.run.discord.UpdatePresence("Settings");
+            this.utils.run.discord.UpdatePresence("Settings");
         }
 
         private void DataResetButton_Click(object sender, RoutedEventArgs e)
         {
-            File.Delete(utils.run.data.dataFile);
-            Directory.Delete(utils.run.data.dirName);
+            File.Delete(this.utils.run.data.dataFile);
+            Directory.Delete(this.utils.run.data.dirName);
             Application.Current.Shutdown();
             System.Windows.Forms.Application.Restart();
         }
@@ -232,7 +232,7 @@ namespace AutoKeyPresser
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            utils.OpenGitHubRepository();
+            this.utils.OpenGitHubRepository();
         }
 
         private void CreditsButton_Click(object sender, RoutedEventArgs e)
@@ -256,22 +256,22 @@ namespace AutoKeyPresser
         {
             MainSettingsGrid.Visibility = Visibility.Hidden;
             DefaultGrid.Visibility = Visibility.Visible;
-            utils.run.discord.UpdatePresence("Idle / Main Menu");
+            this.utils.run.discord.UpdatePresence("Idle / Main Menu");
         }
 
         private void SupportButton_Click(object sender, RoutedEventArgs e)
         {
-            utils.OpenDiscord();
+            this.utils.OpenDiscord();
         }
 
         private void DiscordButton_Click(object sender, RoutedEventArgs e)
         {
-            utils.OpenDiscord();
+            this.utils.OpenDiscord();
         }
 
         private void GitHubButton_Click(object sender, RoutedEventArgs e)
         {
-            utils.OpenGitHubRepository();
+            this.utils.OpenGitHubRepository();
         }
     }
 }

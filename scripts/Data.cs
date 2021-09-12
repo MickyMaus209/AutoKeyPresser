@@ -12,11 +12,9 @@ namespace AutoKeyPresser.scripts
         public string dirName { get; }
         public string dataFile { get; }
         public string docPath { get; }
-        private Utils utils { get; }
 
         public Data(Utils utils)
         {
-            this.utils = utils;
             this.docPath = Directory.GetCurrentDirectory();
             this.dirName = $@"{docPath}\Data";
             this.dataFile = $@"{this.dirName}\data.txt";

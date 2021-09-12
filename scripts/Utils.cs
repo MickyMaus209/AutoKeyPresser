@@ -46,7 +46,7 @@ namespace AutoKeyPresser.scripts
             label.Visibility = Visibility.Hidden;
         }
 
-        public void SwitchStatus(Button b)//wallwwwl
+        public void SwitchStatus(Button b)
         {
             if (b.Tag.Equals("off"))
             {
