@@ -38,6 +38,7 @@ namespace AutoKeyPresser
         private string key;
         private LowLevelKeyboardListener listener;
         public Key toggleKey { get; set; }
+        private bool canChangeHotKey;
 
         public MainWindow()
         {
@@ -60,6 +61,7 @@ namespace AutoKeyPresser
             this.isRunning = false;
             this.rMode = "";
             this.key = "";
+            this.canChangeHotKey = true;
 
             Console.WriteLine("AutoKeyPresser v.3.0 started.");
         }
@@ -188,6 +190,11 @@ namespace AutoKeyPresser
 
         private void HotKeyButton_KeyDown(object sender, KeyEventArgs e)
         {
+            if (canChangeHotKey)
+            {
+                return;
+            }
+            canChangeHotKey = true;
             HotKeyButton.Content = e.Key;
             this.key = e.Key.ToString();
             foreach (Control c in PrimaryButtonSettingsGrid.Children)
@@ -201,6 +208,11 @@ namespace AutoKeyPresser
 
         private void HotKeyButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!canChangeHotKey)
+            {
+                return;
+            }
+            canChangeHotKey = false;
             HotKeyButton.Content = "Click a key!";
             foreach (Control c in PrimaryButtonSettingsGrid.Children)
             {
